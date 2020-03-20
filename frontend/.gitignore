@@ -1,0 +1,20 @@
+# IDE Files
+\.idea/
+
+# Dependencies
+node_modules/
+
+# Framework's files
+\.next/
+
+# Tests
+**/coverage/**/*
+
+# Logs
+**/**/*.log
+
+# Sonar files
+\.scannerwork/
+
+# env files
+.env

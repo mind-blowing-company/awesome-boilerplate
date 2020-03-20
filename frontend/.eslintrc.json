@@ -1,0 +1,94 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true,
+    "jest": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:import/warnings",
+    "plugin:import/errors",
+    "plugin:sonarjs/recommended"
+  ],
+  "globals": {
+    "Atomics": "readonly"
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": [
+          "./pages",
+          "./redux",
+          "./i18n"
+        ],
+        "extensions": [
+          ".js",
+          ".jsx"
+        ]
+      }
+    },
+    "react": {
+      "version": "detect"
+    }
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 7,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react",
+    "import",
+    "sonarjs"
+  ],
+  "rules": {
+    "semi": [
+      "error",
+      "always"
+    ],
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "quotes": [
+      "warn",
+      "double"
+    ],
+    "react/prop-types": [
+      0
+    ],
+    "react/jsx-sort-props": "warn",
+    "no-multiple-empty-lines": [
+      "error",
+      {
+        "max": 1,
+        "maxEOF": 1
+      }
+    ],
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          [
+            "builtin",
+            "external"
+          ],
+          "internal",
+          [
+            "parent",
+            "sibling",
+            "index"
+          ]
+        ],
+        "newlines-between": "always"
+      }
+    ],
+    "no-trailing-spaces": "error",
+    "global-require": "error"
+  }
+}

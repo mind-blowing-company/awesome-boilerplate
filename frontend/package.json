@@ -1,0 +1,50 @@
+{
+  "name": "next-boilerplate",
+  "version": "0.1.0",
+  "description": "A reusable chunk of code with React, SSR and Next.js lib.",
+  "author": "Sulik <uraniummore@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@zeit/next-css": "^1.0.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "next": "^9.2.2",
+    "next-i18next": "^4.2.0",
+    "next-redux-wrapper": "^5.0.0",
+    "next-url-prettifier": "^1.4.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-redux": "^7.2.0",
+    "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-thunk": "^2.3.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "babel-jest": "^25.1.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-react": "^7.18.3",
+    "eslint-plugin-sonarjs": "^0.5.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^25.1.0",
+    "nodemon": "^2.0.2",
+    "prettier": "^1.19.1",
+    "react-test-renderer": "^16.13.0"
+  },
+  "scripts": {
+    "dev": "nodemon server.js --config config/nodemon.json",
+    "build": "next build src/",
+    "start": "NODE_ENV=production node server.js",
+    "lint": "eslint --ext=.js,.jsx ./",
+    "lint:fix": "eslint --ext=.js,.jsx ./ --fix",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  }
+}
