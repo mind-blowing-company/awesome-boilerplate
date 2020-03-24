@@ -1,0 +1,33 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+#__next, .full-height {
+    height: 100%;
+}
+
+.center-children {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+}
+
+.profile-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+}
+
+.social-container a {
+    background-color: #414141;
+    color: #eaeaea;
+    text-decoration: none;
+    padding: 15px;
+    font-size: 25px;
+    border-radius: 3px;
+}

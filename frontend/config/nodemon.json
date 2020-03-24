@@ -5,7 +5,10 @@
     "server.js",
     "next.config.js",
     ".env",
-    "config/nodemon.json"
+    "src/passport",
+    "src/routes",
+    "src/i18n",
+    "config"
   ],
   "ext": "js json"
 }

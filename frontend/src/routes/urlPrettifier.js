@@ -9,6 +9,14 @@ const routes = [
         // Read more: https://github.com/BDav24/next-url-prettifier
         page: "App",
         prettyUrl: "/"
+    },
+    {
+        page: "users/LogIn",
+        prettyUrl: "/login"
+    },
+    {
+        page: "users/Profile",
+        prettyUrl: "/profile"
     }
 ];
 

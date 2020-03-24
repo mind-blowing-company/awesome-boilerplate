@@ -1,12 +1,11 @@
-require("dotenv").config({
-    path: ".env"
-});
+require("./config/dotenv");
 const express = require("express");
 const next = require("next");
 const nextI18NextMiddleware = require("next-i18next/middleware").default;
 
 const i18n = require("./src/i18n");
-const Router = require("./src/routes").Router;
+const RoutesPrettifier = require("./src/routes/urlPrettifier").Router;
+const serverEndpoints = require("./src/routes/serverEndpoints").default;
 
 const port = process.env.PORT || 3000;
 const dev = process.env.NODE_ENV !== "production";
@@ -19,10 +18,12 @@ const requestHandler = app.getRequestHandler();
 app.prepare().then(async () => {
     const server = express();
 
+    server.use(serverEndpoints);
+
     await i18n.initPromise;
     server.use(nextI18NextMiddleware(i18n));
 
-    Router.forEachPrettyPattern((page, pattern, defaultParams) => server.get(pattern, (req, res) => {
+    RoutesPrettifier.forEachPrettyPattern((page, pattern, defaultParams) => server.get(pattern, (req, res) => {
         app.render(
             req,
             res,

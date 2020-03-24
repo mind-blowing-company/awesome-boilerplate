@@ -1,8 +1,8 @@
 import {combineReducers} from "redux";
 
-import clock from "./clock/reducer";
+import user from "./user/reducer";
 
 // Add new reducers here.
 export const rootReducer = combineReducers({
-    clock
+    user
 });
