@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
 import settings
 from app.types import UserFormData, UserType
-from app.use_cases.users import login_user, get_current_user
+from app.use_cases.users import login_user, get_current_user, create_new_user
 
 router = APIRouter()
 
@@ -19,5 +19,5 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
 
 
 @router.post("/register")
-def create_user(form_data: UserFormData = Body(...)):
-    return {"useranme": form_data.username, "password": form_data.password}
+def create_user(form_data: UserFormData):
+    return create_new_user(form_data)

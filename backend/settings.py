@@ -7,7 +7,7 @@ load_dotenv(".env")
 BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 
 # Database
-DATABASE_ENGINE = f"sqlite:///{os.path.join(BASE_PATH, 'db.sqlite')}"
+DATABASE_ENGINE = f"sqlite:///{os.path.join(BASE_PATH, 'db.sqlite')}?check_same_thread=False"
 
 # Security
 SECRET_KEY = os.getenv("FASTAPI_SECRET_KEY")
