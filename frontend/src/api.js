@@ -6,17 +6,24 @@ const API = axios.create({
     timeout: 1000,
 });
 
-export const loginUser = (username, password) => {
+const processUserResponse = (response, callback) => {
+    const token = response.data.access_token;
+    const user = response.data.user;
+    callback(token, user);
+};
+
+export const registerUser = (username, password, callback) => {
+    return API.post("/users/register", {
+        username,
+        password
+    }).then(response => processUserResponse(response, callback));
+};
+
+export const loginUser = (username, password, callback) => {
     return API.post("/users/token", querystring.stringify({
         username,
         password
     }), {
         headers: {"Content-Type": "application/x-www-form-urlencoded"}
-    }).then(response => {
-        const token = response.data.access_token;
-        const user = response.data.user;
-        return {token, user};
-    });
+    }).then(response => processUserResponse(response, callback));
 };
-
-export default API;

@@ -2,18 +2,22 @@ import React from "react";
 import App from "next/app";
 import {Provider} from "react-redux";
 import withRedux from "next-redux-wrapper";
+import {PersistGate} from "redux-persist/integration/react";
+import {persistStore} from "redux-persist";
 
 import {appWithTranslation} from "../i18n";
 import initStore from "../redux/store";
 import "../public/App.css";
-import {userActionTypes} from "../redux/user/actions";
 
 class MyApp extends App {
-    componentDidMount() {
-        this.props.store.dispatch({
-            "type": userActionTypes.LOAD_USER,
-            "user": JSON.parse(localStorage.getItem("user")) || null
-        });
+    static async getInitialProps({Component, ctx}) {
+        let pageProps;
+
+        if (Component.getInitialProps) {
+            pageProps = await Component.getInitialProps(ctx);
+        }
+
+        return {pageProps};
     }
 
     render() {
@@ -21,7 +25,9 @@ class MyApp extends App {
 
         return (
             <Provider store={store}>
-                <Component {...pageProps} />
+                <PersistGate loading={<Component {...pageProps}/>} persistor={persistStore(store)}>
+                    <Component {...pageProps}/>
+                </PersistGate>
             </Provider>
         );
     }

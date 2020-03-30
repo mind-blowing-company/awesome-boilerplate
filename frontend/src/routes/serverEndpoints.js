@@ -1,7 +1,7 @@
 const express = require("express");
 
 const router = express.Router();
-const passport = require("../passport/index").default;
+const passport = require("../passport").default;
 
 router.get("/auth/linkedin",
     passport.authenticate("linkedin", {

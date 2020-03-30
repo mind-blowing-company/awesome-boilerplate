@@ -2,21 +2,12 @@ const UrlPrettifier = require("next-url-prettifier").default;
 
 const routes = [
     {
-        // We still have file-based routing here. But! As seen
-        // from the library's name, it makes our URLs more pretty
-        // by changing them. So we create a page as always and then
-        // just add a pretty URL to it.
-        // Read more: https://github.com/BDav24/next-url-prettifier
-        page: "App",
-        prettyUrl: "/"
-    },
-    {
-        page: "users/LogIn",
-        prettyUrl: "/login"
+        page: "users/AuthPage",
+        prettyUrl: "/users/login"
     },
     {
         page: "users/Profile",
-        prettyUrl: "/profile"
+        prettyUrl: "/"
     }
 ];
 
