@@ -22,7 +22,3 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
 @router.post("/register")
 def create_user(form_data: UserFormData):
     return use_cases.create_new_user(form_data)
-
-@router.post("/refresh-token")
-def refresh_auth_token():
-    return use_cases.refresh_token()
