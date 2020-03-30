@@ -1,13 +1,13 @@
 from fastapi import HTTPException
 from starlette import status
 
-CREDENTIALS_EXCEPTION = HTTPException(
+CredentialsException = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
     detail="Incorrect username or password.",
     headers={"WWW-Authenticate": "Bearer"}
 )
 
-USER_EXISTS_EXCEPTION = HTTPException(
+UserExistsException = HTTPException(
     status_code=status.HTTP_409_CONFLICT,
     detail="Such user already exists."
 )
