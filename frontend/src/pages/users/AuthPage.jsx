@@ -48,7 +48,7 @@ const AuthPage = (props) => {
         <div className="center-children">
             <div className="form-container">
                 <form onSubmit={e => handleFormSubmit(e)}>
-                    <div className="input-group">
+                    <div>
                         <input name="username"
                                onChange={e => handleFormChange(e)}
                                placeholder="Username"
@@ -56,7 +56,7 @@ const AuthPage = (props) => {
                                type="text"
                                value={state.username}/>
                     </div>
-                    <div className="input-group">
+                    <div>
                         <input name="password"
                                onChange={e => handleFormChange(e)}
                                placeholder="Password"
@@ -64,7 +64,7 @@ const AuthPage = (props) => {
                                type="password"
                                value={state.password}/>
                     </div>
-                    <div className="input-group">
+                    <div>
                         <input name="passwordConfirmation"
                                onChange={e => handleFormChange(e)}
                                placeholder="Password Confirmation"

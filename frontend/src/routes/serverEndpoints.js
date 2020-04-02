@@ -2,6 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 const passport = require("../passport").default;
+const api = require("../api");
 
 router.get("/auth/linkedin",
     passport.authenticate("linkedin", {
@@ -13,9 +14,14 @@ router.get("/auth/linkedin",
 
 router.get("/auth/linkedin/callback", (req, res) => {
     passport.authenticate("linkedin", (data) => {
-        // TODO: Handle LinkedIn auth.
-        console.log(data);
-        return res.redirect("/");
+        const email = data.profile.emails.length ? data.profile.emails[0].value : null;
+        const token = data.token;
+
+        api.authenticateLinkedin(token, email).then(response => {
+            res.cookie("token", JSON.stringify(response.data.access_token));
+            res.cookie("user", JSON.stringify(response.data.user));
+            return res.redirect("/");
+        });
     })(req, res);
 });
 

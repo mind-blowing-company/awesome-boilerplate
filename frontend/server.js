@@ -2,6 +2,7 @@ require("./config/dotenv");
 const express = require("express");
 const next = require("next");
 const nextI18NextMiddleware = require("next-i18next/middleware").default;
+const cookieParser = require("cookie-parser");
 
 const i18n = require("./src/i18n");
 const RoutesPrettifier = require("./src/routes/urlPrettifier").Router;
@@ -18,6 +19,7 @@ const requestHandler = app.getRequestHandler();
 app.prepare().then(async () => {
     const server = express();
 
+    server.use(cookieParser());
     server.use(serverEndpoints);
 
     await i18n.initPromise;
