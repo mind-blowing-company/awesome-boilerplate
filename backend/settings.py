@@ -7,10 +7,19 @@ load_dotenv(".env")
 BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 
 # Database
-DATABASE_ENGINE = f"sqlite:///{os.path.join(BASE_PATH, 'db.sqlite')}?check_same_thread=False"
+DB_USER = os.environ.get("DB_USER")
+DB_PASSWORD = os.environ.get("DB_PASSWORD")
+
+DB_HOST = os.environ.get("DB_HOST")
+DB_PORT = os.environ.get("DB_PORT")
+DB_NAME = os.environ.get("DB_NAME")
+
+DATABASE_ENGINE = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 # Security
 SECRET_KEY = os.getenv("FASTAPI_SECRET_KEY")
 JWT_ENCODING_ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
-TOKEN_URL = "/token"
+
+# Social auth
+LINKEDIN_URL = "https://api.linkedin.com/v2/me/"
