@@ -1,11 +1,7 @@
 import {userActionTypes} from "./actions";
 
 const initialState = {
-    user: {
-        id: 0,
-        username: "",
-        password: ""
-    }
+    user: null
 };
 
 export default (state = initialState, action) => {

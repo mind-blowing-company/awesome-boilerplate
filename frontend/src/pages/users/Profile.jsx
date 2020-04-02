@@ -1,20 +1,56 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import {connect} from "react-redux";
 import Router from "next/router";
-import Cookies from "js-cookie";
+import Cookie from "js-cookie";
 
 import {withTranslation} from "../../i18n";
 import {userActionTypes} from "../../redux/user/actions";
+import {updateUser} from "../../api";
+
+const getInitialState = () => ({
+    email: "",
+    password: "",
+    passwordConfirmation: ""
+});
 
 const Profile = props => {
-        const logOutUser = () => {
-            Cookies.remove("token");
-            props.onLogout();
-        };
+    const [state, setState] = useState(getInitialState());
+    const user = Cookie.get("user");
+    const token = Cookie.get("token");
 
-        if (props.user) {
-            return (
-                <div className="profile-container">
+    useEffect(() => {
+        if (!user || !token) {
+            Router.push("/users/login");
+        }
+    }, [user, token]);
+
+    const logOutUser = () => {
+        Cookie.remove("token");
+        Cookie.remove("user");
+        props.onLogout();
+    };
+
+    const handleFormChange = e => {
+        e.persist();
+        setState(prevState => ({
+            ...prevState,
+            [e.target.name]: e.target.value
+        }));
+    };
+
+    const handleFormSubmit = e => {
+        e.preventDefault();
+        updateUser(
+            state.email,
+            state.password,
+            Cookie.get("token")
+        ).then(response => console.log(response));
+    };
+
+    if (props.user) {
+        return (
+            <div className="center-children">
+                <div>
                     <h3>Current user</h3>
                     <table>
                         <thead>
@@ -22,6 +58,7 @@ const Profile = props => {
                             <th>ID</th>
                             <th>Username</th>
                             <th>Password hash</th>
+                            <th>Email</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -29,6 +66,7 @@ const Profile = props => {
                             <td>{props.user.id}</td>
                             <td>{props.user.username}</td>
                             <td>{props.user.password}</td>
+                            <td>{props.user.email}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -36,12 +74,41 @@ const Profile = props => {
                         Log Out
                     </button>
                 </div>
-            );
-        } else {
-            Router.push("/users/login");
-        }
+                <div>
+                    <h2>Edit User</h2>
+                    <form onSubmit={e => handleFormSubmit(e)}>
+                        <div>
+                            <input name="email"
+                                   onChange={e => handleFormChange(e)}
+                                   placeholder="Email"
+                                   type="text"
+                                   value={state.email}/>
+                        </div>
+                        <div>
+                            <input name="password"
+                                   onChange={e => handleFormChange(e)}
+                                   placeholder="New Password"
+                                   type="password"
+                                   value={state.password}/>
+                        </div>
+                        <div>
+                            <input name="passwordConfirmation"
+                                   onChange={e => handleFormChange(e)}
+                                   placeholder="Password Confirmation"
+                                   type="password"
+                                   value={state.passwordConfirmation}/>
+                        </div>
+                        <button type="submit">
+                            Submit
+                        </button>
+                    </form>
+                </div>
+            </div>
+        );
+    } else {
+        return <h3>Redirecting to login.</h3>;
     }
-;
+};
 
 Profile.getInitialProps = async () => {
     return {namespacesRequired: ["common"]};

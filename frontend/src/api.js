@@ -1,5 +1,5 @@
-import axios from "axios";
-import querystring from "querystring";
+const axios = require("axios").default;
+const querystring = require("querystring");
 
 const API = axios.create({
     baseURL: process.env.API_SERVER,
@@ -12,18 +12,45 @@ const processUserResponse = (response, callback) => {
     callback(token, user);
 };
 
-export const registerUser = (username, password, callback) => {
+const registerUser = (username, password, callback) => {
     return API.post("/users/register", {
         username,
         password
     }).then(response => processUserResponse(response, callback));
 };
 
-export const loginUser = (username, password, callback) => {
+const loginUser = (username, password, callback) => {
     return API.post("/users/token", querystring.stringify({
         username,
         password
     }), {
         headers: {"Content-Type": "application/x-www-form-urlencoded"}
     }).then(response => processUserResponse(response, callback));
+};
+
+const updateUser = (email, password, token) => {
+    return API.put("/users/update", {
+        email,
+        password: password || null
+    }, {
+        headers: {
+            "Accept": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    });
+};
+
+const authenticateLinkedin = (token, email) => {
+    return API.post("/users/auth/linkedin", {
+        email,
+        token
+    });
+};
+
+module.exports = {
+    loginUser,
+    registerUser,
+    updateUser,
+    authenticateLinkedin,
+    default: API
 };

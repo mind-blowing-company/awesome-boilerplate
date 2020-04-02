@@ -8,6 +8,8 @@
     "src/passport",
     "src/routes",
     "src/i18n",
+    "src/api",
+    "src/redux/store.js",
     "config"
   ],
   "ext": "js json"
