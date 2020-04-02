@@ -1,12 +1,20 @@
+from typing import Optional
+
 from pydantic.main import BaseModel
 
 
-# Form data type for user registration.
-class UserFormData(BaseModel):
+class UserAuthForm(BaseModel):
     username: str
     password: str
 
 
+class EditUserForm(BaseModel):
+    email: str
+    password: Optional[str]
+
+
 class UserType(BaseModel):
+    id: int
     username: str
-    hashed_password: str
+    password: str
+    email: Optional[str]
