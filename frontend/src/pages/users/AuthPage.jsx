@@ -1,11 +1,9 @@
 import React, {useState} from "react";
 import Link from "next/link";
-import {connect} from "react-redux";
 import Router from "next/router";
 import Cookies from "js-cookie";
 
-import {loginUser, registerUser} from "../../api";
-import {userActionTypes} from "../../redux/user/actions";
+import {loginUser, registerUser} from "../../api/users";
 import {withTranslation} from "../../i18n";
 
 const getInitialState = () => ({
@@ -14,7 +12,7 @@ const getInitialState = () => ({
     passwordConfirmation: ""
 });
 
-const AuthPage = (props) => {
+const AuthPage = () => {
     const [state, setState] = useState(getInitialState);
 
     const handleFormChange = e => {
@@ -25,9 +23,8 @@ const AuthPage = (props) => {
         }));
     };
 
-    const saveUserSession = (token, user) => {
-        Cookies.set("token", token, {expires: 1});
-        props.onFormSubmit(user);
+    const saveUserSession = (token) => {
+        Cookies.set("token", JSON.stringify(token));
         Router.push("/");
     };
 
@@ -85,6 +82,16 @@ const AuthPage = (props) => {
                         LinkedIn
                     </a>
                 </Link>
+                <Link href={"/auth/google"}>
+                    <a>
+                        Google
+                    </a>
+                </Link>
+                <Link href={"/auth/facebook"}>
+                    <a>
+                        Facebook
+                    </a>
+                </Link>
             </div>
         </div>
     );
@@ -94,12 +101,4 @@ AuthPage.getInitialProps = async () => {
     return {namespacesRequired: ["common"]};
 };
 
-const mapStateToProps = state => ({...state.user});
-
-const mapDispatchToProps = dispatch => ({
-    onFormSubmit: user => {
-        dispatch({type: userActionTypes.LOG_IN, user});
-    }
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslation("common")(AuthPage));
+export default withTranslation("common")(AuthPage);

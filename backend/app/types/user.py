@@ -9,7 +9,8 @@ class UserAuthForm(BaseModel):
 
 
 class EditUserForm(BaseModel):
-    email: str
+    username: Optional[str]
+    email: Optional[str]
     password: Optional[str]
 
 

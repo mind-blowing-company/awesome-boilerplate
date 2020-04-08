@@ -22,4 +22,6 @@ JWT_ENCODING_ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 # Social auth
-LINKEDIN_URL = "https://api.linkedin.com/v2/me/"
+LINKEDIN_URL = "https://api.linkedin.com/v2/me"
+GOOGLE_URL = "https://www.googleapis.com/oauth2/v2/userinfo"
+FACEBOOK_URL = "https://graph.facebook.com/v6.0/me?fields=id,email"

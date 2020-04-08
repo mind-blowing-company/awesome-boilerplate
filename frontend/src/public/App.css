@@ -27,7 +27,9 @@ html, body {
     background-color: #414141;
     color: #eaeaea;
     text-decoration: none;
-    padding: 15px;
-    font-size: 25px;
+    padding: 10px;
+    font-size: 18px;
     border-radius: 3px;
+    margin: 10px 10px;
+    display: block;
 }

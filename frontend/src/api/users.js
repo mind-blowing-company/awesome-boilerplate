@@ -1,15 +1,10 @@
-const axios = require("axios").default;
 const querystring = require("querystring");
 
-const API = axios.create({
-    baseURL: process.env.API_SERVER,
-    timeout: 1000,
-});
+const API = require("./index").default;
 
 const processUserResponse = (response, callback) => {
     const token = response.data.access_token;
-    const user = response.data.user;
-    callback(token, user);
+    callback(token);
 };
 
 const registerUser = (username, password, callback) => {
@@ -28,22 +23,45 @@ const loginUser = (username, password, callback) => {
     }).then(response => processUserResponse(response, callback));
 };
 
-const updateUser = (email, password, token) => {
+const updateUser = (user, token) => {
     return API.put("/users/update", {
-        email,
-        password: password || null
+        username: user.username,
+        password: user.password,
+        email: user.email
     }, {
         headers: {
             "Accept": "application/json",
-            "Authorization": `Bearer ${token}`
+            "Authorization": `Bearer ${JSON.parse(token)}`
         }
     });
 };
 
-const authenticateLinkedin = (token, email) => {
+const getCurrentUser = (token) => {
+    return API.get("/users/me", {
+        headers: {
+            "Authorization": `Bearer ${JSON.parse(token)}`
+        }
+    });
+};
+
+const authenticateLinkedin = (token, email=null) => {
     return API.post("/users/auth/linkedin", {
-        email,
-        token
+        token,
+        email
+    });
+};
+
+const authenticateGoogle = (token, email=null) => {
+    return API.post("/users/auth/google", {
+        token,
+        email
+    });
+};
+
+const authenticateFacebook = (token, email = null) => {
+    return API.post("/users/auth/facebook", {
+        token,
+        email
     });
 };
 
@@ -51,6 +69,8 @@ module.exports = {
     loginUser,
     registerUser,
     updateUser,
+    getCurrentUser,
     authenticateLinkedin,
-    default: API
+    authenticateGoogle,
+    authenticateFacebook,
 };

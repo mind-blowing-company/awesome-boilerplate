@@ -18,6 +18,8 @@
     "next-redux-wrapper": "^5.0.0",
     "next-url-prettifier": "^1.4.0",
     "passport": "^0.4.1",
+    "passport-facebook": "^3.0.0",
+    "passport-google-oauth20": "^2.0.0",
     "passport-linkedin-oauth2": "^2.0.0",
     "querystring": "^0.2.0",
     "react": "^16.12.0",

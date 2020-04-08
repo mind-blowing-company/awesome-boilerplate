@@ -1,13 +1,14 @@
 import React, {useState, useEffect} from "react";
 import {connect} from "react-redux";
 import Router from "next/router";
-import Cookie from "js-cookie";
+import Cookies from "js-cookie";
 
 import {withTranslation} from "../../i18n";
 import {userActionTypes} from "../../redux/user/actions";
-import {updateUser} from "../../api";
+import {updateUser, getCurrentUser} from "../../api/users";
 
 const getInitialState = () => ({
+    username: "",
     email: "",
     password: "",
     passwordConfirmation: ""
@@ -15,18 +16,20 @@ const getInitialState = () => ({
 
 const Profile = props => {
     const [state, setState] = useState(getInitialState());
-    const user = Cookie.get("user");
-    const token = Cookie.get("token");
+    const token = Cookies.get("token");
 
     useEffect(() => {
-        if (!user || !token) {
+        if (!token) {
             Router.push("/users/login");
         }
-    }, [user, token]);
+
+        getCurrentUser(token).then(response => {
+            props.setUser(response.data.user);
+        }).catch(error => console.log(error));
+    }, [token]);
 
     const logOutUser = () => {
-        Cookie.remove("token");
-        Cookie.remove("user");
+        Cookies.remove("token");
         props.onLogout();
     };
 
@@ -38,13 +41,21 @@ const Profile = props => {
         }));
     };
 
-    const handleFormSubmit = e => {
-        e.preventDefault();
+    const handleFormSubmit = () => {
+        const updatedUser = {...props.user};
+        updatedUser.username = state.username;
+        updatedUser.email = state.email;
+        updatedUser.password = state.password;
+
         updateUser(
-            state.email,
-            state.password,
-            Cookie.get("token")
-        ).then(response => console.log(response));
+            updatedUser,
+            Cookies.get("token")
+        )
+            .then(response => {
+                Cookies.set("token", JSON.stringify(response.data.access_token));
+            })
+            // TODO: Handle errors.
+            .catch(error => console.log(error));
     };
 
     if (props.user) {
@@ -76,12 +87,19 @@ const Profile = props => {
                 </div>
                 <div>
                     <h2>Edit User</h2>
-                    <form onSubmit={e => handleFormSubmit(e)}>
+                    <form onSubmit={() => handleFormSubmit()}>
+                        <div>
+                            <input name="username"
+                                   onChange={e => handleFormChange(e)}
+                                   placeholder="Username"
+                                   type="text"
+                                   value={state.username}/>
+                        </div>
                         <div>
                             <input name="email"
                                    onChange={e => handleFormChange(e)}
                                    placeholder="Email"
-                                   type="text"
+                                   type="email"
                                    value={state.email}/>
                         </div>
                         <div>
@@ -98,7 +116,7 @@ const Profile = props => {
                                    type="password"
                                    value={state.passwordConfirmation}/>
                         </div>
-                        <button type="submit">
+                        <button disabled={state.password !== state.passwordConfirmation} type="submit">
                             Submit
                         </button>
                     </form>
@@ -106,7 +124,7 @@ const Profile = props => {
             </div>
         );
     } else {
-        return <h3>Redirecting to login.</h3>;
+        return <h3>Loading...</h3>;
     }
 };
 
@@ -119,7 +137,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    onLogout: () => dispatch({type: userActionTypes.LOG_OUT})
+    onLogout: () => dispatch({type: userActionTypes.LOG_OUT}),
+    setUser: (user) => dispatch({type: userActionTypes.LOAD_USER, user})
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslation("common")(Profile));

@@ -5,8 +5,8 @@ const nextI18NextMiddleware = require("next-i18next/middleware").default;
 const cookieParser = require("cookie-parser");
 
 const i18n = require("./src/i18n");
-const RoutesPrettifier = require("./src/routes/urlPrettifier").Router;
-const serverEndpoints = require("./src/routes/serverEndpoints").default;
+const RoutesPrettifier = require("./src/routes/clientRoutes").Router;
+const socialRoutes = require("./src/routes/socialRoutes").default;
 
 const port = process.env.PORT || 3000;
 const dev = process.env.NODE_ENV !== "production";
@@ -19,8 +19,8 @@ const requestHandler = app.getRequestHandler();
 app.prepare().then(async () => {
     const server = express();
 
+    server.use(socialRoutes);
     server.use(cookieParser());
-    server.use(serverEndpoints);
 
     await i18n.initPromise;
     server.use(nextI18NextMiddleware(i18n));
