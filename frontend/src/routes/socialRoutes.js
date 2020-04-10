@@ -7,7 +7,6 @@ const usersApi = require("../api/users");
 // Save user and it's JWT to cookies and then redirect.
 const setSessionCookies = (apiData, res) => {
     res.cookie("token", JSON.stringify(apiData.data.access_token));
-    res.cookie("user", JSON.stringify(apiData.data.user));
     res.redirect("/");
 };
 
