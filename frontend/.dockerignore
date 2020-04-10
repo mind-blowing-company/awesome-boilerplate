@@ -1,8 +1,11 @@
+Dockerfile
 README.md
-node_modules/
+.dockerignore
+.eslintrc.json
 .git/
 .gitignore
+
 \.idea/
-.eslintrc.json
-.dockerignore
-Dockerfile
+\.code/
+node_modules/
+scripts/
