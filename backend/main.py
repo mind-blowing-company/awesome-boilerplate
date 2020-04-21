@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -6,7 +8,7 @@ from app.endpoints.main_endpoints import router
 app = FastAPI()
 
 origins = [
-    "http://localhost:3000"
+    os.getenv("FRONTEND_URL")
 ]
 
 app.add_middleware(

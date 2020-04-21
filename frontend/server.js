@@ -1,4 +1,4 @@
-require("./config/dotenv");
+require("./config/dotenv").default;
 const express = require("express");
 const next = require("next");
 const nextI18NextMiddleware = require("next-i18next/middleware").default;

@@ -5,39 +5,30 @@ const FacebookStrategy = require("passport-facebook").Strategy;
 
 const keys = require("../../config/socialKeys").default;
 
-passport.use("linkedin", new LinkedInStrategy({
-    clientID: keys.LINKEDIN.id,
-    clientSecret: keys.LINKEDIN.secret,
-    // TODO: Add valid URL.
-    callbackURL: "http://localhost:3000/auth/linkedin/callback",
-    scope: ["r_emailaddress", "r_liteprofile"]
-}, (accessToken, refreshToken, profile, cb) => {
+const processSocialCallback = (accessToken, refreshToken, profile, cb) => {
     return cb({
         token: accessToken,
         profile: profile
     });
-}));
+};
+
+passport.use("linkedin", new LinkedInStrategy({
+    clientID: keys.LINKEDIN.id,
+    clientSecret: keys.LINKEDIN.secret,
+    callbackURL: process.env.LINKEDIN_CALLBACK_URL,
+    scope: ["r_emailaddress", "r_liteprofile"]
+}, processSocialCallback));
 
 passport.use("google", new GoogleStrategy({
     clientID: keys.GOOGLE.id,
     clientSecret: keys.GOOGLE.secret,
-    callbackURL: "http://localhost:3000/auth/google/callback"
-}, (accessToken, refreshToken, profile, cb) => {
-        return cb({
-            token: accessToken,
-            profile: profile
-        });
-}));
+    callbackURL: process.env.GOOGLE_CALLBACK_URL,
+}, processSocialCallback));
 
 passport.use("facebook", new FacebookStrategy({
     clientID: keys.FACEBOOK.id,
     clientSecret: keys.FACEBOOK.secret,
-    callbackURL: "http://localhost:3000/auth/facebook/callback"
-}, (accessToken, refreshToken, profile, cb) => {
-    return cb({
-        token: accessToken,
-        profile: profile
-    });
-}));
+    callbackURL: process.env.FACEBOOK_CALLBACK_URL,
+}, processSocialCallback));
 
 exports.default = passport;
