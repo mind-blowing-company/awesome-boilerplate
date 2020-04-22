@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 
 import {withTranslation} from "../../i18n";
 import {userActionTypes} from "../../redux/user/actions";
-import {updateUser, getCurrentUser} from "../../api/users";
+import {updateUser, getCurrentUser, refreshSession} from "../../api/users";
 
 const getInitialState = () => ({
     username: "",
@@ -17,6 +17,7 @@ const getInitialState = () => ({
 const Profile = props => {
     const [state, setState] = useState(getInitialState());
     const token = Cookies.get("token");
+    const refreshToken = Cookies.get("refreshToken");
 
     useEffect(() => {
         if (!token) {
@@ -25,7 +26,16 @@ const Profile = props => {
 
         getCurrentUser(token).then(response => {
             props.setUser(response.data.user);
-        }).catch(error => console.log(error));
+        }).catch(error => {
+            if (error.response && error.response.status === 401) {
+                refreshSession(refreshToken).then(response => {
+                    Cookies.set("token", JSON.stringify(response.data.access_token));
+                    props.setUser(response.data.user);
+                }).catch(() => {
+                    console.log(error.response);
+                });
+            }
+        });
     }, [token]);
 
     const logOutUser = () => {

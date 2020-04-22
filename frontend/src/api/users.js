@@ -4,7 +4,18 @@ const API = require("./index").default;
 
 const processUserResponse = (response, callback) => {
     const token = response.data.access_token;
-    callback(token);
+    const refreshToken = response.data.refresh_token;
+    callback(token, refreshToken);
+};
+
+const refreshSession = (refreshToken) => {
+    return API.post("/users/token/refresh", {
+        token: JSON.parse(refreshToken)
+    }, {
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
 };
 
 const registerUser = (username, password, callback) => {
@@ -73,4 +84,5 @@ module.exports = {
     authenticateLinkedin,
     authenticateGoogle,
     authenticateFacebook,
+    refreshSession
 };

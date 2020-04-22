@@ -23,8 +23,9 @@ const AuthPage = () => {
         }));
     };
 
-    const saveUserSession = (token) => {
+    const saveUserSession = (token, refreshToken) => {
         Cookies.set("token", JSON.stringify(token));
+        Cookies.set("refreshToken", JSON.stringify(refreshToken));
         Router.push("/");
     };
 
