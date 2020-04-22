@@ -19,3 +19,7 @@ class UserType(BaseModel):
     username: str
     password: str
     email: Optional[str]
+
+
+class RefreshTokenData(BaseModel):
+    token: str

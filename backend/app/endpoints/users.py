@@ -5,6 +5,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from app.types import UserAuthForm, UserType, EditUserForm
 from app.types.identity import SocialAuthData
 from app.controllers.users import UsersController
+from app.types.user import RefreshTokenData
 
 router = APIRouter()
 controller = UsersController()
@@ -15,9 +16,9 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
     return controller.login_user(form_data)
 
 
-@router.get("/token/refresh")
-def refresh_auth_token(token: str):
-    return controller.validate_refresh_token(token)
+@router.post("/token/refresh")
+def refresh_auth_token(data: RefreshTokenData = Body(...)):
+    return controller.validate_refresh_token(data.token)
 
 
 @router.get("/me")
