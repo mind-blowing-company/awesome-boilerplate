@@ -22,7 +22,6 @@ class UsersController:
         self.password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
         self.users_storage = DatabaseStorage(User)
         self.identities_storage = DatabaseStorage(Identity)
-        self.secret_key = settings.SECRET_KEY
 
     def create_new_user(self, form_data: UserAuthForm):
         user = self.users_storage.get(username=form_data.username)
@@ -43,8 +42,7 @@ class UsersController:
         user.password = self._get_password_hash(form_data.password) if form_data.password else user.password
 
         updated_user = self.users_storage.update(user)
-        access_token = self._create_access_token(data={"sub": updated_user.username})
-        return {"access_token": access_token, "token_type": "bearer", "user": updated_user}
+        return self._create_auth_response(token_data={"sub": user.username}, user=updated_user)
 
     def get_current_user(self, token: str = Depends(oauth2_scheme)):
         return self._get_user_from_jwt(token)
@@ -64,6 +62,15 @@ class UsersController:
         response = json.loads(validate_facebook(data.token).text)
         return self._authenticate_social_account(data, response)
 
+    def _create_auth_response(self, token_data, user):
+        access_token = self._create_access_token(data=token_data)
+
+        return {
+            "token_type": "bearer",
+            "access_token": access_token,
+            "user": user
+        }
+
     def _authenticate_social_account(self, data: SocialAuthData, response: dict):
         email = data.email if "email" not in response.keys() else response["email"]
         provider_id = response["id"]
@@ -71,15 +78,13 @@ class UsersController:
         if email:
             user = self.users_storage.get(email=email)
             if user:
-                access_token = self._create_access_token(data={"sub": user.username})
-                return {"access_token": access_token, "token_type": "bearer", "user": user}
+                return self._create_auth_response(token_data={"sub": user.username}, user=user)
 
         identity = self.identities_storage.get(provider_id=provider_id)
 
         if identity:
             user = self.users_storage.get(id=identity.user_id)
-            access_token = self._create_access_token(data={"sub": user.username})
-            return {"access_token": access_token, "token_type": "bearer", "user": user}
+            return self._create_auth_response(token_data={"sub": user.username}, user=user)
 
         user_to_create = User(username=provider_id, password=self._get_password_hash(provider_id))
 
@@ -90,8 +95,7 @@ class UsersController:
         identity_to_create = Identity(user_id=new_user.id, provider_id=provider_id)
         self.identities_storage.create(identity_to_create)
 
-        access_token = self._create_access_token(data={"sub": new_user.username})
-        return {"access_token": access_token, "token_type": "bearer", "user": new_user}
+        return self._create_auth_response(token_data={"sub": new_user.username}, user=new_user)
 
     def _get_user_from_jwt(self, token):
         try:
@@ -111,7 +115,7 @@ class UsersController:
         return user
 
     def _decode_token(self, token):
-        return jwt.decode(token, self.secret_key, algorithms=[settings.JWT_ENCODING_ALGORITHM])
+        return jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.JWT_ENCODING_ALGORITHM])
 
     def _login_user(self, username: str, password: str):
         user = self._authenticate_user(username, password)
@@ -119,8 +123,7 @@ class UsersController:
         if not user:
             raise CredentialsException
 
-        access_token = self._create_access_token(data={"sub": user.username})
-        return {"access_token": access_token, "token_type": "bearer", "user": user}
+        return self._create_auth_response(token_data={"sub": user.username}, user=user)
 
     def _create_access_token(self, data: dict, expire_minutes: int = settings.ACCESS_TOKEN_EXPIRE_MINUTES):
         data_to_encode = data.copy()
@@ -128,7 +131,7 @@ class UsersController:
         data_to_encode.update({"exp": expiration_time})
         encoded_jwt = jwt.encode(
             data_to_encode,
-            self.secret_key,
+            settings.SECRET_KEY,
             algorithm=settings.JWT_ENCODING_ALGORITHM
         )
 
