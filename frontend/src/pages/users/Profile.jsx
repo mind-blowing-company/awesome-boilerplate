@@ -32,7 +32,7 @@ const Profile = props => {
                     Cookies.set("token", JSON.stringify(response.data.access_token));
                     props.setUser(response.data.user);
                 }).catch(() => {
-                    console.log(error.response);
+                    Router.push("/users/login");
                 });
             }
         });
