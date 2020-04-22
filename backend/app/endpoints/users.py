@@ -10,14 +10,19 @@ router = APIRouter()
 controller = UsersController()
 
 
-@router.get("/me")
-def get_current_user(current_user: UserType = Depends(controller.get_current_user)):
-    return {"user": current_user}
-
-
 @router.post("/token")
 def login(form_data: OAuth2PasswordRequestForm = Depends()):
     return controller.login_user(form_data)
+
+
+@router.get("/token/refresh")
+def refresh_auth_token(token: str):
+    return controller.validate_refresh_token(token)
+
+
+@router.get("/me")
+def get_current_user(current_user: UserType = Depends(controller.get_current_user)):
+    return {"user": current_user}
 
 
 @router.post("/register")

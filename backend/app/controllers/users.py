@@ -62,14 +62,19 @@ class UsersController:
         response = json.loads(validate_facebook(data.token).text)
         return self._authenticate_social_account(data, response)
 
-    def _create_auth_response(self, token_data, user):
-        access_token = self._create_access_token(data=token_data)
+    def validate_refresh_token(self, token: str = Depends(oauth2_scheme)):
+        payload = self._get_payload_from_token(token)
+        owner_username = payload.get("owner")
 
-        return {
-            "token_type": "bearer",
-            "access_token": access_token,
-            "user": user
-        }
+        if owner_username is None:
+            raise CredentialsException
+
+        user = self.users_storage.get(username=owner_username)
+
+        if user is None:
+            raise CredentialsException
+
+        return self._create_auth_response(token_data={"sub": user.username}, user=user)
 
     def _authenticate_social_account(self, data: SocialAuthData, response: dict):
         email = data.email if "email" not in response.keys() else response["email"]
@@ -98,13 +103,10 @@ class UsersController:
         return self._create_auth_response(token_data={"sub": new_user.username}, user=new_user)
 
     def _get_user_from_jwt(self, token):
-        try:
-            payload = self._decode_token(token)
-            username: str = payload.get("sub")
-            if username is None:
-                raise CredentialsException
-        except PyJWTError as e:
-            print(e)
+        payload = self._get_payload_from_token(token)
+        username: str = payload.get("sub")
+
+        if username is None:
             raise CredentialsException
 
         user = self.users_storage.get(username=username)
@@ -113,6 +115,14 @@ class UsersController:
             raise CredentialsException
 
         return user
+
+    def _get_payload_from_token(self, token):
+        try:
+            payload = self._decode_token(token)
+        except PyJWTError as e:
+            print(e)
+            raise CredentialsException
+        return payload
 
     def _decode_token(self, token):
         return jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.JWT_ENCODING_ALGORITHM])
@@ -125,7 +135,22 @@ class UsersController:
 
         return self._create_auth_response(token_data={"sub": user.username}, user=user)
 
-    def _create_access_token(self, data: dict, expire_minutes: int = settings.ACCESS_TOKEN_EXPIRE_MINUTES):
+    def _create_auth_response(self, token_data, user):
+        access_token = self._create_jwt(data=token_data)
+        refresh_token = self._generate_refresh_token(user)
+
+        return {
+            "token_type": "bearer",
+            "access_token": access_token,
+            "user": user,
+            "refresh_token": refresh_token
+        }
+
+    def _generate_refresh_token(self, user):
+        refresh_token = self._create_jwt(data={"owner": user.username}, expire_minutes=43200)
+        return refresh_token
+
+    def _create_jwt(self, data: dict, expire_minutes: int = settings.ACCESS_TOKEN_EXPIRE_MINUTES):
         data_to_encode = data.copy()
         expiration_time = datetime.utcnow() + timedelta(expire_minutes)
         data_to_encode.update({"exp": expiration_time})
@@ -137,15 +162,11 @@ class UsersController:
 
         return encoded_jwt
 
-    def _authenticate_user(self, username: str, password: str):
+    def _authenticate_user(self, username: str, password: str) -> User:
         user = self.users_storage.get(username=username)
 
-        if not user:
-            return False
-        if not self._verify_password(password, user.password):
-            return False
-
-        return user
+        if user and self._verify_password(password, user.password):
+            return user
 
     def _verify_password(self, plain_password: str, hashed_password: str):
         return self.password_context.verify(plain_password, hashed_password)
