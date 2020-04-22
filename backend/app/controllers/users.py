@@ -17,7 +17,7 @@ from app.utils.social_token_validator import validate_linkedin, validate_google,
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/token")
 
 
-class UserUseCases:
+class UsersController:
     def __init__(self):
         self.password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
         self.users_storage = DatabaseStorage(User)
