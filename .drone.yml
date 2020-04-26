@@ -26,6 +26,7 @@ steps:
   image: plugins/gcr
   settings:
     context: backend
+    dockerfile: backend/Dockerfile
     registry: eu.gcr.io
     repo: mind-blowing-company/${DRONE_REPO}
     cache_from:
@@ -79,6 +80,7 @@ steps:
   image: plugins/gcr
   settings:
     context: frontend
+    dockerfile: frontend/Dockerfile
     registry: eu.gcr.io
     repo: mind-blowing-company/${DRONE_REPO}
     cache_from:
