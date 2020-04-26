@@ -28,7 +28,7 @@ steps:
     context: backend
     dockerfile: backend/Dockerfile
     registry: eu.gcr.io
-    repo: mind-blowing-company/${DRONE_REPO}
+    repo: mind-blowing-company/${DRONE_REPO}-backend
     cache_from:
       - eu.gcr.io/mind-blowing-company/${DRONE_REPO}-backend:${DRONE_SOURCE_BRANCH/\//-}
     json_key:
@@ -82,7 +82,7 @@ steps:
     context: frontend
     dockerfile: frontend/Dockerfile
     registry: eu.gcr.io
-    repo: mind-blowing-company/${DRONE_REPO}
+    repo: mind-blowing-company/${DRONE_REPO}-frontend
     cache_from:
       - eu.gcr.io/mind-blowing-company/${DRONE_REPO}-frontend:${DRONE_SOURCE_BRANCH/\//-}
     json_key:
