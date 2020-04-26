@@ -1,0 +1,98 @@
+---
+kind: pipeline
+name: ci/cd
+
+image_pull_secrets:
+  - GCR_CREDENTIALS
+
+steps:
+- name: Test Backend (TODO)
+  image: python:3.7.3-slim
+  commands:
+  - echo 'DO TESTS THERE'
+  when:
+    branch:
+      include:
+        - feature/*
+        - master
+        - dev
+    event:
+      include:
+        - push
+        - pull_request
+
+- name: Build&Push Backend
+  image: plugins/gcr
+  settings:
+    context: backend
+    registry: eu.gcr.io
+    repo: mind-blowing-company/${DRONE_REPO}
+    cache_from:
+      - eu.gcr.io/mind-blowing-company/${DRONE_REPO}-backend:${DRONE_SOURCE_BRANCH/\//-}
+    json_key:
+      from_secret: GCR_JSON
+    tags:
+        - ${DRONE_SOURCE_BRANCH/\//-}
+        - ${DRONE_SOURCE_BRANCH/\//-}-${DRONE_COMMIT_SHA:0:8}
+  when:
+    branch:
+      include:
+        - feature/*
+        - master
+        - dev
+    event:
+      include:
+        - push
+
+- name: Spec kostil Frontend (TODO)
+  image: node:10.16.3-alpine
+  commands:
+  - echo "$ENV_FILE" > frontend/.env
+  when:
+    branch:
+      include:
+        - feature/*
+        - master
+        - dev
+    event:
+      include:
+        - push
+        - pull_request
+
+- name: Test Frontend (TODO)
+  image: node:10.16.3-alpine
+  commands:
+  - echo 'DO TESTS THERE'
+  when:
+    branch:
+      include:
+        - feature/*
+        - master
+        - dev
+    event:
+      include:
+        - push
+        - pull_request
+
+- name: Build&Push Frontend
+  image: plugins/gcr
+  settings:
+    context: frontend
+    registry: eu.gcr.io
+    repo: mind-blowing-company/${DRONE_REPO}
+    cache_from:
+      - eu.gcr.io/mind-blowing-company/${DRONE_REPO}-frontend:${DRONE_SOURCE_BRANCH/\//-}
+    json_key:
+      from_secret: GCR_JSON
+    tags:
+        - ${DRONE_SOURCE_BRANCH/\//-}
+        - ${DRONE_SOURCE_BRANCH/\//-}-${DRONE_COMMIT_SHA:0:8}
+  when:
+    branch:
+      include:
+        - feature/*
+        - master
+        - dev
+    event:
+      include:
+        - push

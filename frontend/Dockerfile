@@ -2,13 +2,15 @@ FROM node:10.16.3-alpine
 
 WORKDIR /app
 
-COPY package.json ./
-COPY yarn.lock ./
+COPY --chown=1000:1000 . /app
 
-RUN yarn
+RUN \
+ yarn &&\
+ yarn build &&\
+ chown 1000:1000 -R /app
 
-COPY . ./
+USER 1000
 
-RUN yarn build
-
-CMD ["yarn", "start"]
+EXPOSE 3000
+ENTRYPOINT [ "yarn" ]
+CMD [ "start" ]

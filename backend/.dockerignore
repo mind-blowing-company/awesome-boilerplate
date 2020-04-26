@@ -4,3 +4,7 @@ venv/
 \.code/
 
 Dockerfile
+.gitignore
+.dockerignore
+.env
+example.env
