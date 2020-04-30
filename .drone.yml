@@ -48,6 +48,9 @@ steps:
 
 - name: Spec kostil Frontend (TODO)
   image: node:10.16.3-alpine
+  environment:
+    ENV_FILE:
+      from_secret: ENV_FILE
   commands:
   - echo "$ENV_FILE" > frontend/.env
   when:
