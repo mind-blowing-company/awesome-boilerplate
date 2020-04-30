@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+  name: {{ include "awe-boilerplate.fullname" . }}-db
+  labels:
+    {{- include "awe-boilerplate.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+      {{- include "awe-boilerplate.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: db
+        {{- include "awe-boilerplate.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-db
+          image: "postgres:12.2-alpine"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: postgres
+              containerPort: 5432
+              protocol: TCP
+          envFrom:
+          - configMapRef:
+              name: {{ include "awe-boilerplate.fullname" . }}-cfg

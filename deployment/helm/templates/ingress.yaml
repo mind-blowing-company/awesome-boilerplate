@@ -1,0 +1,35 @@
+{{- $fullName := include "awe-boilerplate.fullname" . -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}
+  labels:
+    {{- include "awe-boilerplate.labels" . | nindent 4 }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  tls:
+    - hosts:
+        - {{ .Values.FrontEnd.domain | quote }}
+        - {{ .Values.BackEnd.domain | quote }}
+      secretName: {{ $fullName }}-crt-secret
+  rules:
+    - host: {{ .Values.FrontEnd.domain | quote }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ include "awe-boilerplate.fullname" . }}-frontend
+              servicePort: http
+    - host: {{ .Values.BackEnd.domain | quote }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ include "awe-boilerplate.fullname" . }}-backend
+              servicePort: http

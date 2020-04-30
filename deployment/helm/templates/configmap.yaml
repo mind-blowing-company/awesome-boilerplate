@@ -1,0 +1,18 @@
+
+apiVersion: v1
+data:
+  FASTAPI_SECRET_KEY: {{ randAlphaNum 50 | b64enc | replace "=" "" | quote }}
+  POSTGRES_USER: "awesome"
+  POSTGRES_DB: "awesome-db"
+  POSTGRES_PASSWORD: {{ randAlphaNum 10 | b64enc | replace "=" "" | quote }}
+  DB_HOST: "{{ include "awe-boilerplate.fullname" . }}-db"
+  DB_PORT: "5432"
+  LINKEDIN_URL: "https://api.linkedin.com/v2/me"
+  GOOGLE_URL: "https://www.googleapis.com/oauth2/v2/userinfo"
+  FACEBOOK_URL: "https://graph.facebook.com/v6.0/me?fields=id,email"
+  FRONTEND_URL: "https://{{ .Values.FrontEnd.domain }}"
+kind: ConfigMap
+metadata:
+  name: {{ include "awe-boilerplate.fullname" . }}-cfg
+  labels:
+  {{- include "awe-boilerplate.labels" . | nindent 4 }}

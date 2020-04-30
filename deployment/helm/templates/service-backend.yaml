@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "awe-boilerplate.fullname" . }}-backend
+  labels:
+    app: backend
+    {{- include "awe-boilerplate.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: backend
+    {{- include "awe-boilerplate.selectorLabels" . | nindent 4 }}
