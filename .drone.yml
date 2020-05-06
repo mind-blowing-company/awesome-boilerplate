@@ -106,7 +106,7 @@ steps:
 - name: DeployProd
   image: pelotech/drone-helm3
   environment:
-    DOAMIN:
+    DOMAIN:
       from_secret: DOMAIN
   settings:
     helm_command: upgrade
