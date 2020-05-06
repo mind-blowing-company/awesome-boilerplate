@@ -113,6 +113,7 @@ steps:
     chart: ./deployment/helm
     release: awbp
     namespace: awsome
+    debug: true
     api_server: https://kubernetes.default.svc
     kubernetes_token:
       from_secret: KUBER_TOKEN
