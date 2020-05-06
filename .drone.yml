@@ -110,6 +110,7 @@ steps:
       from_secret: DOMAIN
   settings:
     helm_command: upgrade
+    atomic_upgrade: true
     chart: ./deployment/helm
     release: awbp
     namespace: awsome
