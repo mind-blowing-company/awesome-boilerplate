@@ -104,23 +104,22 @@ steps:
         - push
 
 - name: DeployProd
-  image: bitsbeats/drone-helm3
+  image: pelotech/drone-helm3
   environment:
-    DOMAIN_BACK:
-      from_secret: DOMAIN_BACK
-    DOMAIN_FRONT:
-      from_secret: DOMAIN_FRONT
+    DOAMIN:
+      from_secret: DOMAIN
   settings:
+    helm_command: upgrade
     chart: ./deployment/helm
     release: awbp
     namespace: awsome
-    kube_api_server: https://kubernetes.default.svc
-    kube_token:
+    api_server: https://kubernetes.default.svc
+    kubernetes_token:
       from_secret: KUBER_TOKEN
-    kube_certificate:
+    kubernetes_certificate:
       from_secret: KUBER_CA
     values:
       - FrontEnd.image.tag=${DRONE_SOURCE_BRANCH/\//-}-${DRONE_COMMIT_SHA:0:8}
       - BackEnd.image.tag=${DRONE_SOURCE_BRANCH/\//-}-${DRONE_COMMIT_SHA:0:8}
-      - FrontEnd.domain=${DOMAIN_BACK}
-      - BackEnd.domain=${DOMAIN_FRONT}
+      - FrontEnd.domain=${DOMAIN}
+      - BackEnd.domain=api.${DOMAIN}
