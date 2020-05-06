@@ -2,7 +2,7 @@ apiVersion: v1
 name: awe-boilerplate
 description: Awesome Boilerplate Deployment
 
-type: application
+# type: application
 
 version: 0.1.0
 
@@ -15,5 +15,5 @@ keywords:
 sources:
   - https://github.com/mind-blowing-company/awesome-boilerplate
 maintainers:
-- name: Yurii Kostiuk
-  email: kostukyura
+- name: YuriiK
+  email: kostukyura@somemail.somecome
