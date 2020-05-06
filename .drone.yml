@@ -121,4 +121,4 @@ steps:
       - FrontEnd.image.tag=${DRONE_SOURCE_BRANCH/\//-}-${DRONE_COMMIT_SHA:0:8}
       - BackEnd.image.tag=${DRONE_SOURCE_BRANCH/\//-}-${DRONE_COMMIT_SHA:0:8}
       - FrontEnd.domain=${DOMAIN}
-      - BackEnd.domain=api.${DOMAIN}
+      - BackEnd.domain="api.${DOMAIN/\"/""}"
