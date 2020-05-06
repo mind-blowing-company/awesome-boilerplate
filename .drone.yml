@@ -106,8 +106,10 @@ steps:
 - name: DeployProd
   image: bitsbeats/drone-helm3
   environment:
-    DOAMIN:
-      from_secret: DOMAIN
+    DOMAIN_BACK:
+      from_secret: DOMAIN_BACK
+    DOMAIN_FRONT:
+      from_secret: DOMAIN_FRONT
   settings:
     chart: ./deployment/helm
     release: awbp
@@ -120,5 +122,5 @@ steps:
     values:
       - FrontEnd.image.tag=${DRONE_SOURCE_BRANCH/\//-}-${DRONE_COMMIT_SHA:0:8}
       - BackEnd.image.tag=${DRONE_SOURCE_BRANCH/\//-}-${DRONE_COMMIT_SHA:0:8}
-      - FrontEnd.domain=${DOMAIN}
-      - BackEnd.domain="api.${DOMAIN/\"/""}"
+      - FrontEnd.domain=${DOMAIN_BACK}
+      - BackEnd.domain=${DOMAIN_FRONT}
