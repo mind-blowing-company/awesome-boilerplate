@@ -116,6 +116,8 @@ steps:
     api_server: https://kubernetes.default.svc
     kubernetes_token:
       from_secret: KUBER_TOKEN
+    kubernetes_certificate:
+      from_secret: KUBER_CA
     values:
       - FrontEnd.image.tag=${DRONE_SOURCE_BRANCH/\//-}-${DRONE_COMMIT_SHA:0:8}
       - BackEnd.image.tag=${DRONE_SOURCE_BRANCH/\//-}-${DRONE_COMMIT_SHA:0:8}
